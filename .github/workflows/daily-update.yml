@@ -1,0 +1,57 @@
+name: Daily Developer Log
+
+on:
+  schedule:
+    # Runs every day at 12:00 UTC
+    - cron: "0 12 * * *"
+
+  # Allows you to run it manually
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-developer-log
+  cancel-in-progress: false
+
+jobs:
+  update-log:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Generate today's log
+      - name: Generate daily log
+        run: python scripts/update_log.py
+
+      # Configure Git
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # Commit changes
+      - name: Commit changes
+        run: |
+          git add logs/ data/stats.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: update daily developer log"
+
+      # Push changes
+      - name: Push changes
+        run: git push
