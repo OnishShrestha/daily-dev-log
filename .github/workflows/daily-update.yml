@@ -37,8 +37,8 @@ jobs:
       # Configure Git
       - name: Configure Git
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "Onish Shrestha"
+          git config user.email "163622584+OnishShrestha@users.noreply.github.com"
 
       # Commit changes
       - name: Commit changes
